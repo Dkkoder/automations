@@ -19,11 +19,11 @@ if now.hour == 9 and now.minute == 15:
 elif now.hour == 21 and now.minute == 15:
     run_time = "12z"
 else:
-    run_time = "onbekend"  # fallback, bijv. als je handmatig draait
+    run_time = "Handmatig"  # fallback, bijv. als je handmatig draait
 
 # Bericht + afbeelding via embed
 payload = {
-    "content": f"ECMWF Pluim {now.strftime('%Y-%m-%d')} {run_time}",
+    "content": f"ECMWF Pluim Midden {now.strftime('%d-%m-%Y')} {run_time}",
     "embeds": [
         {
             "image": {"url": image_url}
