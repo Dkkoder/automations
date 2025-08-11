@@ -1,15 +1,29 @@
 import os
 import requests
+from datetime import datetime
+import pytz  # pip install pytz
 
 # Webhook URL uit GitHub Secret
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
 # Afbeelding die je wilt posten
-image_url = "https://cdn.knmi.nl/knmi/map/page/weer/actueel-weer/temperatuur.png"
+image_url = "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png"
+
+# Bepaal NL-tijd
+nl_tz = pytz.timezone("Europe/Amsterdam")
+now = datetime.now(nl_tz)
+
+# Zet tekst afhankelijk van tijdstip
+if now.hour == 9 and now.minute == 15:
+    run_time = "0z"
+elif now.hour == 21 and now.minute == 15:
+    run_time = "12z"
+else:
+    run_time = "onbekend"  # fallback, bijv. als je handmatig draait
 
 # Bericht + afbeelding via embed
 payload = {
-    "content": "KNMI Temperatuurkaart 🌡️",
+    "content": f"ECMWF Pluim {now.strftime('%Y-%m-%d')} {run_time}",
     "embeds": [
         {
             "image": {"url": image_url}
