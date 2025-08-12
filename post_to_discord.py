@@ -6,18 +6,21 @@ import pytz  # pip install pytz
 # Webhook URL uit GitHub Secret
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
-# Afbeelding die je wilt posten
-image_url = "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png"
+# Basis URL van de afbeelding
+base_image_url = "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png"
 
 # Bepaal NL-tijd
 nl_tz = pytz.timezone("Europe/Amsterdam")
 now = datetime.now(nl_tz)
 
 # Zet tekst afhankelijk van tijdstip
-if now.hour <12:
+if now.hour < 12:
     run_time = "0z"
 else:
     run_time = "12z"
+
+# Voeg cache-busting parameter toe (voorkomt dat Discord oude afbeelding toont)
+image_url = f"{base_image_url}?t={now.strftime('%Y%m%d%H%M%S')}"
 
 # Bericht + afbeelding via embed
 payload = {
