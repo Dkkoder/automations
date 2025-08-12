@@ -16,7 +16,7 @@ now = datetime.now(nl_tz)
 # Zet tekst afhankelijk van tijdstip
 if now.hour <12:
     run_time = "0z"
-else
+else:
     run_time = "12z"
 
 # Bericht + afbeelding via embed
