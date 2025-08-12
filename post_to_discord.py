@@ -14,12 +14,10 @@ nl_tz = pytz.timezone("Europe/Amsterdam")
 now = datetime.now(nl_tz)
 
 # Zet tekst afhankelijk van tijdstip
-if now.hour == 9 and now.minute == 15:
+if now.hour <12:
     run_time = "0z"
-elif now.hour == 21 and now.minute == 15:
+else
     run_time = "12z"
-else:
-    run_time = "Handmatig"  # fallback, bijv. als je handmatig draait
 
 # Bericht + afbeelding via embed
 payload = {
