@@ -6,36 +6,43 @@ import pytz  # pip install pytz
 # Webhook URL uit GitHub Secret
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
-# Basis URL van de afbeelding
-base_image_url = "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png"
+# Lijst van afbeeldingen + bijbehorende locaties
+images = [
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png", "De Bilt"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06235.png", "Den Helder"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06280.png", "Groningen"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06270.png", "Leeuwarden"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06380.png", "Maastricht"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06240.png", "Schiphol"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06290.png", "Twente"),
+    ("https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06310.png", "Vlissingen")
+]
 
 # Bepaal NL-tijd
 nl_tz = pytz.timezone("Europe/Amsterdam")
 now = datetime.now(nl_tz)
 
 # Zet tekst afhankelijk van tijdstip
-if now.hour < 12:
-    run_time = "0z"
-else:
-    run_time = "12z"
+run_time = "0z" if now.hour < 12 else "12z"
 
-# Voeg cache-busting parameter toe (voorkomt dat Discord oude afbeelding toont)
-image_url = f"{base_image_url}?t={now.strftime('%Y%m%d%H%M%S')}"
+# Maak embeds voor elke afbeelding
+embeds = []
+for url, location in images:
+    embeds.append({
+        "title": location,
+        "image": {"url": f"{url}?t={now.strftime('%Y%m%d%H%M%S')}"}
+    })
 
-# Bericht + afbeelding via embed
+# Payload
 payload = {
-    "content": f"ECMWF Pluim Midden {now.strftime('%d-%m-%Y')} {run_time}",
-    "embeds": [
-        {
-            "image": {"url": image_url}
-        }
-    ]
+    "content": f"ECMWF Pluim {now.strftime('%d-%m-%Y')} {run_time}",
+    "embeds": embeds
 }
 
 # Versturen naar Discord
 resp = requests.post(WEBHOOK_URL, json=payload)
 
 if resp.status_code == 204:
-    print("✅ Afbeelding succesvol gepost naar Discord!")
+    print("✅ Afbeeldingen succesvol gepost naar Discord!")
 else:
     print(f"❌ Fout: {resp.status_code} - {resp.text}")
