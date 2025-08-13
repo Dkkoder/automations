@@ -1,7 +1,7 @@
 import os
 import requests
 from datetime import datetime
-import pytz  # pip install pytz
+import pytz
 
 # Webhook URL uit GitHub Secret
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
