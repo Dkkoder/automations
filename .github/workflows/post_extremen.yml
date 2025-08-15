@@ -24,4 +24,4 @@ jobs:
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-        run: python extremen_to_discord.py
+        run: python Python code's/extremen_to_discord.py
