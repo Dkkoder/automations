@@ -24,4 +24,4 @@ jobs:
       - name: Run script
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python post_to_discord.py
+        run: python pluim_to_discord.py
