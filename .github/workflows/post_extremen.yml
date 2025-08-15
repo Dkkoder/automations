@@ -6,7 +6,7 @@ on:
     - cron: "0 * * * *"  # Elk uur, op de 0e minuut UTC (01:00 NL tijd in winter, 02:00 in zomer)
 
 jobs:
-  send-image:
+  send-extremen:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
