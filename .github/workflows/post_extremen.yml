@@ -1,0 +1,27 @@
+name: Post Extremen naar Discord
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"  # Elk uur, op de 0e minuut UTC (01:00 NL tijd in winter, 02:00 in zomer)
+
+jobs:
+  send-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pytz discord.py
+
+      - name: Run script
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+        run: python extremen_to_discord.py
