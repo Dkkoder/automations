@@ -42,7 +42,7 @@ async def on_ready():
             files.append(discord.File(BytesIO(response.content), filename=filename))
 
     # Voeg optioneel een bericht toe met datum en tijd
-    await channel.send(content=f"Actuele kaarten {now.strftime('%d-%m-%Y %H:%M')}", files=files)
+    await channel.send(content=f"Extremen {now.strftime('%d-%m-%Y %H:%M')}", files=files)
     await client.close()
 
 client.run(TOKEN)
