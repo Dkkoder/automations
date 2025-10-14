@@ -46,3 +46,5 @@ if resp.status_code == 204:
     print("✅ Afbeeldingen succesvol gepost naar Discord!")
 else:
     print(f"❌ Fout: {resp.status_code} - {resp.text}")
+
+#woeliewoelie
