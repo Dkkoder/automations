@@ -25,4 +25,4 @@ jobs:
         env:
           DISCORD_PLUIMEN_BOT: ${{ secrets.DISCORD_PLUIMEN_BOT }}
           DISCORD_PLUIMEN_CHANNEL: ${{ secrets.DISCORD_PLUIMEN_CHANNEL }}
-        run: python all_pluimen_to_discord.py
+        run: python "Python code's/all_pluimen_to_discord.py"
