@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz
 
 TOKEN = os.environ['DISCORD_PLUIMEN_BOT']
-CHANNEL_ID = int(os.environ['DISCORD_PLUIMENN_CHANNEL'])
+CHANNEL_ID = int(os.environ['DISCORD_PLUIMEN_CHANNEL'])
 
 client = discord.Client(intents=discord.Intents.default())
 
