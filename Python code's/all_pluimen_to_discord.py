@@ -3,6 +3,7 @@ import requests
 from io import BytesIO
 from datetime import datetime
 import pytz
+import os
 
 TOKEN = os.environ['DISCORD_PLUIMEN_BOT']
 CHANNEL_ID = int(os.environ['DISCORD_PLUIMEN_CHANNEL'])
