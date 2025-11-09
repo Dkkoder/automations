@@ -1,4 +1,4 @@
-name: Post KNMI Afbeelding naar Discord
+name: Post KNMI Pluimen naar Discord
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -19,9 +19,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests pytz
+        run: pip install requests pytz discord.py
 
       - name: Run script
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python pluim_to_discord.py
+          DISCORD_PLUIMEN_BOT: ${{ secrets.DISCORD_PLUIMEN_BOT }}
+          DISCORD_PLUIMEN_CHANNEL: ${{ secrets.DISCORD_PLUIMEN_CHANNEL }}
+        run: python all_pluimen_to_discord.py
