@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "15 7 * * *"   # 08:15 NL-tijd (wintertijd)
-    - cron: "15 20 * * *"  # 21:15 NL-tijd (wintertijd)
+    - cron: "00 20 * * *"  # 21:00 NL-tijd (wintertijd)
 
 jobs:
   send-image:
