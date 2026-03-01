@@ -25,56 +25,64 @@ pluimen_to_send = [
         "title": "ECMWF De Bilt",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06260.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06260.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06260.png"
         ]
     },
     {
         "title": "ECMWF Den Helder (De Kooy)",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06235.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06235.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06235.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06235.png"
         ]
     },
     {
         "title": "ECMWF Groningen (Eelde)",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06280.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06280.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06280.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06280.png"
         ]
     },
     {
         "title": "ECMWF Leeuwarden",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06270.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06270.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06270.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06270.png"
         ]
     },
     {
         "title": "ECMWF Maastricht (Beek)",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06380.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06380.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06380.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06380.png"
         ]
     },
     {
         "title": "ECMWF Schiphol",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06240.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06240.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06240.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06240.png"
         ]
     },
     {
         "title": "ECMWF Twente",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06290.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06290.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06290.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06290.png"
         ]
     },
     {
         "title": "ECMWF Vlissingen",
         "links": [
             "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06310.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_snow_06310.png"
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06310.png",
+            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06310.png"
         ]
     }
 ]
