@@ -136,27 +136,10 @@ def main():
         response["temporaryDownloadUrl"]
     )
 
-    # JSON parsen
-    try:
-        data = json.loads(file_content)
-    except Exception:
-        logger.error("JSON parsing mislukt")
-        sys.exit(1)
-
     # =========================
-    # SIMPELE OUTPUT (aanpasbaar)
+    # DIRECTE OUTPUT (PLATE TEKST)
     # =========================
-    messages = []
-
-    if isinstance(data, list):
-        for item in data:
-            title = item.get("title", "Geen titel")
-            level = item.get("level", "onbekend")
-            messages.append(f"⚠️ {title} ({level})")
-    else:
-        messages.append(json.dumps(data, indent=2))
-
-    text = "\n".join(messages)
+    text = file_content  # geen JSON parsing meer
 
     # naar Discord sturen
     asyncio.run(send_to_discord(text))
