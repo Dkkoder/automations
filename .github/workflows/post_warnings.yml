@@ -20,7 +20,7 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install logging os sys requests json asyncio discord
 
       - name: Run script
         env:
