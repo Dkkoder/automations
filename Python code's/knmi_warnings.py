@@ -54,7 +54,7 @@ def set_last_processed(filename):
 
 
 def main():
-    # api_key = os.environ.get("KNMI_API_KEY")  # 🔐 via GitHub secret!
+    api_key = os.environ.get("KNMI_API_KEY")
     dataset_name = "waarschuwingen_nederland_48h"
     dataset_version = "1.0"
 
