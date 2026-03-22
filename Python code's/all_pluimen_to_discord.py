@@ -1,111 +1,169 @@
-import discord
-import requests
-from io import BytesIO
-from datetime import datetime
-import pytz
+import logging
 import os
+import sys
+import requests
+import json
+import asyncio
+import discord
 
-TOKEN = os.environ['DISCORD_PLUIMEN_BOT']
-CHANNEL_ID = int(os.environ['DISCORD_PLUIMEN_CHANNEL'])
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(os.environ.get("LOG_LEVEL", logging.INFO))
 
-client = discord.Client(intents=discord.Intents.default())
-
-# Bepaal NL-tijd
-nl_tz = pytz.timezone("Europe/Amsterdam")
-now = datetime.now(nl_tz)
-
-# Runtime
-run_time = "0z" if now.hour < 12 else "12z"
-
-# Unix timestamp om caching te voorkomen
-timestamp = int(now.timestamp())
-
-pluimen_to_send = [
-    {
-        "title": "ECMWF De Bilt",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06260.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06260.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06260.png"
-        ]
-    },
-    {
-        "title": "ECMWF Den Helder (De Kooy)",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06235.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06235.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06235.png"
-        ]
-    },
-    {
-        "title": "ECMWF Groningen (Eelde)",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06280.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06280.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06280.png"
-        ]
-    },
-    {
-        "title": "ECMWF Leeuwarden",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06270.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06270.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06270.png"
-        ]
-    },
-    {
-        "title": "ECMWF Maastricht (Beek)",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06380.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06380.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06380.png"
-        ]
-    },
-    {
-        "title": "ECMWF Schiphol",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06240.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06240.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06240.png"
-        ]
-    },
-    {
-        "title": "ECMWF Twente",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06290.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06290.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06290.png"
-        ]
-    },
-    {
-        "title": "ECMWF Vlissingen",
-        "links": [
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_tt_06310.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_rr_06310.png",
-            "https://true.infoplaza.io/gdata/eps/eps_pluim_cape_06310.png"
-        ]
-    }
-]
+STATE_FILE = "last_file.txt"
 
 
-@client.event
-async def on_ready():
-    print(f'Logged in als {client.user}')
-    channel = client.get_channel(CHANNEL_ID)
+# =========================
+# KNMI API
+# =========================
+class OpenDataAPI:
+    def __init__(self, api_token: str):
+        self.base_url = "https://api.dataplatform.knmi.nl/open-data/v1"
+        self.headers = {"Authorization": api_token}
 
-    for message in pluimen_to_send:
-        files = []
-        for i, url in enumerate(message["links"]):
-            # Voeg timestamp toe om caching te voorkomen
-            url_with_timestamp = f"{url}?t={timestamp}"
-            resp = requests.get(url_with_timestamp)
-            if resp.status_code == 200:
-                files.append(discord.File(BytesIO(resp.content), filename=f"{message['title']}_{i + 1}.png"))
+    def __get_data(self, url, params=None):
+        return requests.get(url, headers=self.headers, params=params).json()
 
-        # Voeg runtime toe naast de titel
-        await channel.send(content=f"{message['title']} {now.strftime('%d-%m-%Y')} {run_time}", files=files)
+    def list_files(self, dataset_name: str, dataset_version: str, params: dict):
+        return self.__get_data(
+            f"{self.base_url}/datasets/{dataset_name}/versions/{dataset_version}/files",
+            params=params,
+        )
 
-    await client.close()  # sluit de bot af na posten
+    def get_file_url(self, dataset_name: str, dataset_version: str, file_name: str):
+        return self.__get_data(
+            f"{self.base_url}/datasets/{dataset_name}/versions/{dataset_version}/files/{file_name}/url"
+        )
 
 
-client.run(TOKEN)
+def read_file_from_temporary_download_url(download_url):
+    try:
+        r = requests.get(download_url)
+        r.raise_for_status()
+        return r.text
+    except Exception:
+        logger.exception("Unable to read file")
+        sys.exit(1)
+
+
+# =========================
+# STATE MANAGEMENT
+# =========================
+def get_last_processed():
+    if os.path.exists(STATE_FILE):
+        with open(STATE_FILE, "r") as f:
+            return f.read().strip()
+    return None
+
+
+def set_last_processed(filename):
+    with open(STATE_FILE, "w") as f:
+        f.write(filename)
+
+
+# =========================
+# DISCORD BOT
+# =========================
+async def send_to_discord(message: str):
+    token = os.environ.get("DISCORD_WARNING_BOT")
+    channel_id = int(os.environ.get("DISCORD_WARNING_CHANNEL"))
+
+    if not token or not channel_id:
+        logger.error("Discord token of channel ID ontbreekt")
+        return
+
+    intents = discord.Intents.default()
+    client = discord.Client(intents=intents)
+
+    @client.event
+    async def on_ready():
+        logger.info(f"Ingelogd als {client.user}")
+
+        channel = client.get_channel(channel_id)
+
+        if not channel:
+            logger.error("Kanaal niet gevonden")
+            await client.close()
+            return
+
+        # Split berichten (Discord max 2000 chars)
+        chunks = [message[i:i+2000] for i in range(0, len(message), 2000)]
+
+        for chunk in chunks:
+            await channel.send(chunk)
+
+        await client.close()
+
+    await client.start(token)
+
+
+# =========================
+# MAIN
+# =========================
+def main():
+    api_key = os.environ.get("KNMI_API_KEY")
+    dataset_name = "waarschuwingen_nederland_48h"
+    dataset_version = "1.0"
+
+    if not api_key:
+        logger.error("Geen API key gevonden")
+        sys.exit(1)
+
+    logger.info("Fetching KNMI data...")
+
+    api = OpenDataAPI(api_token=api_key)
+
+    params = {"maxKeys": 1, "orderBy": "created", "sorting": "desc"}
+    response = api.list_files(dataset_name, dataset_version, params)
+
+    if "error" in response:
+        logger.error(f"API error: {response['error']}")
+        sys.exit(1)
+
+    latest_file = response["files"][0].get("filename")
+    logger.info(f"Latest file: {latest_file}")
+
+    last_file = get_last_processed()
+
+    if latest_file == last_file:
+        logger.info("Geen nieuwe data")
+        return
+
+    logger.info("Nieuwe data gevonden!")
+
+    response = api.get_file_url(dataset_name, dataset_version, latest_file)
+    file_content = read_file_from_temporary_download_url(
+        response["temporaryDownloadUrl"]
+    )
+
+    # JSON parsen
+    try:
+        data = json.loads(file_content)
+    except Exception:
+        logger.error("JSON parsing mislukt")
+        sys.exit(1)
+
+    # =========================
+    # SIMPELE OUTPUT (aanpasbaar)
+    # =========================
+    messages = []
+
+    if isinstance(data, list):
+        for item in data:
+            title = item.get("title", "Geen titel")
+            level = item.get("level", "onbekend")
+            messages.append(f"⚠️ {title} ({level})")
+    else:
+        messages.append(json.dumps(data, indent=2))
+
+    text = "\n".join(messages)
+
+    # naar Discord sturen
+    asyncio.run(send_to_discord(text))
+
+    # opslaan zodat geen duplicaten
+    set_last_processed(latest_file)
+
+
+if __name__ == "__main__":
+    main()
