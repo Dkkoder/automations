@@ -1,0 +1,33 @@
+name: KNMI waarschuwingen
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"  # elke 10 minuten
+  workflow_dispatch:        # handmatig starten
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run script
+        env:
+          KNMI_API_KEY: ${{ secrets.KNMI_API_KEY }}
+        run: python main.py
+
+      - name: Commit state (last_file.txt)
+        run: |
+          git add last_file.txt
+          git commit -m "Update last processed file" || echo "No changes"
+          git push
