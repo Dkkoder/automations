@@ -24,7 +24,7 @@ jobs:
       - name: Run script
         env:
           KNMI_API_KEY: ${{ secrets.KNMI_API_KEY }}
-        run: python main.py
+        run: python knmi_warnings.py
 
       - name: Commit state (last_file.txt)
         run: |
