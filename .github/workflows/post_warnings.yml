@@ -3,7 +3,7 @@ name: KNMI waarschuwingen
 
 on:
   schedule:
-    - cron: "*/10 * * * *"  # elke 10 minuten
+    - cron: "0 * * * *"  # elke 1 uur
   workflow_dispatch:        # handmatig starten
 
 jobs:
