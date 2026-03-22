@@ -24,7 +24,9 @@ jobs:
       - name: Run script
         env:
           KNMI_API_KEY: ${{ secrets.KNMI_API_KEY }}
-        run: python knmi_warnings.py
+          DISCORD_WARNING_BOT: ${{ secrets.DISCORD_WARNING_BOT }}
+          DISCORD_WARNING_CHANNEL: ${{ secrets.DISCORD_WARNING_CHANNEL }}
+        run: python "Python code's/knmi_warnings.py"
 
       - name: Commit state (last_file.txt)
         run: |
