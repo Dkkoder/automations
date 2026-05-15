@@ -8,7 +8,7 @@ import os
 TOKEN = os.environ['DISCORD_PLUIMEN_BOT']
 CHANNEL_ID = int(os.environ['DISCORD_PLUIMEN_CHANNEL'])
 
-client = discord.Client(intents=discord.Intents.default())
+client = discord.Client(intents=discord.Intents.default()) 
 
 # Bepaal NL-tijd
 nl_tz = pytz.timezone("Europe/Amsterdam")
