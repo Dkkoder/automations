@@ -3,7 +3,7 @@ import requests
 from io import BytesIO
 from datetime import datetime
 import pytz
-import os
+import os 
 
 TOKEN = os.environ['DISCORD_EXTREMEN_BOT']
 CHANNEL_ID = int(os.environ['DISCORD_EXTREMEN_CHANNEL'])
