@@ -4,7 +4,7 @@ import sys
 import requests
 import json
 import asyncio
-import discord
+import discord 
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
