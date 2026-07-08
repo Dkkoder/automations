@@ -116,4 +116,4 @@ async def on_ready():
     await client.close()  # sluit de bot af na posten
 
 
-client.run(TOKEN)
+client.run(TOKEN) 
