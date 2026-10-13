@@ -45,5 +45,5 @@ async def on_ready():
     await channel.send(content=f"Extremen {now.strftime('%d-%m-%Y %H:%M')}", files=files)
     await client.close()
 
-client.run(TOKEN)
+client.run(TOKEN) 
  
