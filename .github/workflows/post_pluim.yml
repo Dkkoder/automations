@@ -1,10 +1,8 @@
-name: Post KNMI Pluimen naar Discord
-
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 7 * * *"   # 08:15 NL-tijd (wintertijd)
-    - cron: "00 20 * * *"  # 21:00 NL-tijd (wintertijd)
+    - cron: "15 7 * * *"   # 08:15 NL-wintertijd
+    - cron: "0 20 * * *"   # 21:00 NL-wintertijd
 
 jobs:
   send-image:
